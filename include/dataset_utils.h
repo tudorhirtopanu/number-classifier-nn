@@ -2,6 +2,8 @@
 #define DATASET_UTILS
 
 #include <vector>
-std::vector<int> generateRandomIndices(int itemCount);
+#include <Eigen/Dense>
+
+Eigen::MatrixXf readData(const std::string& filename);
 
 #endif
