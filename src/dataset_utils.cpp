@@ -89,3 +89,47 @@ Eigen::MatrixXf readData(const std::string& filename) {
     file.close();
     return data;
 }
+
+/**
+ * @brief Read label data from an IDX file into an integer vector.
+ *
+ * This function reads label data from an IDX file and stores it in an integer vector.
+ *
+ * @param filename The name of the IDX file to read.
+ * @return An integer vector containing the label data.
+ */
+std::vector<int> readLabels(const std::string& filename) {
+    std::vector<int> labels;
+    std::ifstream file(filename, std::ios::binary);
+
+    if (!file) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return labels;
+    }
+
+    // Read the magic number
+    int magic_number;
+    file.read(reinterpret_cast<char*>(&magic_number), sizeof(magic_number));
+    magic_number = __builtin_bswap32(magic_number); // Convert from big-endian to little-endian
+
+    if (magic_number != 2049) {
+        std::cerr << "Invalid magic number" << std::endl;
+        return labels;
+    }
+
+    // Read the number of labels
+    int num_labels;
+    file.read(reinterpret_cast<char*>(&num_labels), sizeof(num_labels));
+    num_labels = __builtin_bswap32(num_labels); // Convert from big-endian to little-endian
+
+    labels.reserve(num_labels);
+
+    // Read the labels
+    for (int i = 0; i < num_labels; ++i) {
+        uint8_t label_byte;
+        file.read(reinterpret_cast<char*>(&label_byte), sizeof(label_byte));
+        labels[i] = static_cast<int>(label_byte);
+    }
+
+    return labels;
+}
