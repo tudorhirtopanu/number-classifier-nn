@@ -4,6 +4,12 @@
 #include <Eigen/Dense>
 
 #include "../include/dataset_utils.h"
+#include "../include/helpers.h"
+
+
+/* TODO:
+ * - randomise order of images&labels
+ */
 
 // Temp func to print out image
 void savePGM(const std::string& filename, const Eigen::MatrixXf& image) {
@@ -35,7 +41,7 @@ int main() {
 
     std::string imageDataFile = "../data/train-images-idx3-ubyte";
     std::string labelDataFile = "../data/train-labels.idx1-ubyte";
-    const int DATA_INDEX = 1800;
+    const int DATA_INDEX = 1960;
 
     // Load Data
     Eigen::MatrixXf mnistData = readData(imageDataFile);
@@ -45,9 +51,9 @@ int main() {
 
     // Load label data
     std::vector<int> labels = readLabels(labelDataFile);
-    int label = labels[DATA_INDEX]; // Assuming 0-based indexing
+    int label = labels[DATA_INDEX];
 
-    // Assuming mnistData is a matrix of pixel values, convert it to Eigen::MatrixXi if needed
+    // mnistData is a matrix of pixel values
     Eigen::MatrixXf image = mnistData.col(DATA_INDEX);
 
     // Save the first item in the array as a PGM image
@@ -56,6 +62,20 @@ int main() {
 
     std::cout << "Label for image at index 10: " << label << std::endl;
 
+    // Initialize parameters
+    Eigen::MatrixXf W1;
+    Eigen::MatrixXf b1;
+    Eigen::MatrixXf W2;
+    Eigen::MatrixXf b2;
+
+    std::tie(W1, b1, W2, b2) = initParams();
+
+    // Get the shape of W1
+    int rows = W1.rows();
+    int cols = W1.cols();
+
+    // Print the shape of W1
+    std::cout << "Shape of W1: " << rows << "x" << cols << std::endl;
 
     return 0;
 }
