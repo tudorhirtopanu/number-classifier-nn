@@ -9,4 +9,5 @@ include_directories(
 )
 
 add_executable(NumberClassifierNN src/main.cpp
-        src/dataset_utils.cpp)
+        src/dataset_utils.cpp
+        src/helpers.cpp)
