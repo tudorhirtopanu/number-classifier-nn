@@ -11,4 +11,5 @@ include_directories(
 add_executable(NumberClassifierNN src/main.cpp
         src/dataset_utils.cpp
         src/helpers.cpp
-        src/forward_propagation.cpp)
+        src/forward_propagation.cpp
+        src/activation_functions.cpp)
