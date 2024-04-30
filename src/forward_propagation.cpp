@@ -1,4 +1,5 @@
 #include "../include/forward_propagation.h"
+#include "../include/activation_functions.h"
 
 #include <Eigen/Core>
 
@@ -23,4 +24,23 @@
  */
 std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> forwardPropagation(Eigen::MatrixXf W1, Eigen::MatrixXf b1, Eigen::MatrixXf W2, Eigen::MatrixXf b2, Eigen::MatrixXf X){
 
+    // Calculate Z1
+    Eigen::MatrixXf Z1 = W1*X;
+    for (int i = 0; i < Z1.cols(); ++i) {
+        Z1.col(i) += b1;
+    }
+
+    // Get A1 by passing Z1 through activation function
+    Eigen::MatrixXf A1 = ReLU(Z1);
+
+    // Calculate Z2
+    Eigen::MatrixXf Z2 = W2*A1;
+    for (int i = 0; i < Z2.cols(); ++i) {
+        Z2.col(i) += b2;
+    }
+
+    // Obtain A2 by applying softmax
+    Eigen::MatrixXf A2 = softmax(Z2);
+
+    return std::make_tuple(Z1, A1, Z2, A2);
 }
