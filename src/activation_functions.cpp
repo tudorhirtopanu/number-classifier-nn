@@ -14,3 +14,30 @@
 Eigen::MatrixXf ReLU(Eigen::MatrixXf Z){
     return Z.array().max(0);
 }
+
+/**
+ * @brief Applies the softmax function
+ *
+ * This function computes the softmax function along the columns of a given matrix.
+ * Softmax converts raw scores into probabilities for each column independently
+ *
+ * @param Z The input matrix to which softmax will be applied.
+ * @return A matrix with the same dimensions as the input matrix, where each column represents
+ *         the softmax probabilities for one data point.
+ */
+Eigen::MatrixXf softmax(const Eigen::MatrixXf& Z) {
+    Eigen::MatrixXf A(Z.rows(), Z.cols());
+
+    // Compute exponential of Z
+    Eigen::MatrixXf expZ = Z.array().exp();
+
+    // Compute sum of exponential along each column
+    Eigen::VectorXf expZSum = expZ.colwise().sum();
+
+    // Compute softmax for each column
+    for (int j = 0; j < Z.cols(); ++j) {
+        A.col(j) = expZ.col(j) / expZSum(j);
+    }
+
+    return A;
+}
