@@ -5,4 +5,6 @@
 
 Eigen::MatrixXf ReLU(Eigen::MatrixXf Z);
 
+Eigen::MatrixXf softmax(const Eigen::MatrixXf& Z);
+
 #endif
