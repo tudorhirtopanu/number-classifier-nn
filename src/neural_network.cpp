@@ -1,4 +1,4 @@
-#include "../include/forward_propagation.h"
+#include "../include/neural_network.h"
 #include "../include/activation_functions.h"
 
 #include <Eigen/Core>
