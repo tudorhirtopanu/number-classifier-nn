@@ -7,4 +7,6 @@ Eigen::MatrixXf ReLU(Eigen::MatrixXf Z);
 
 Eigen::MatrixXf softmax(const Eigen::MatrixXf& Z);
 
+Eigen::MatrixXf ReLU_derivative(Eigen::MatrixXf Z);
+
 #endif
