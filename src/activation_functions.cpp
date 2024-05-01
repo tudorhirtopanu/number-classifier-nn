@@ -41,3 +41,28 @@ Eigen::MatrixXf softmax(const Eigen::MatrixXf& Z) {
 
     return A;
 }
+
+/**
+ * @brief Computes the derivative of the Rectified Linear Unit function
+ *
+ * This function calculates the derivative of the ReLU function for each element in the input matrix.
+ * The derivative is 1 for positive elements and 0 for non-positive elements.
+ *
+ * @param Z The input matrix for which the derivative of ReLU will be calculated.
+ * @return A matrix with the same dimensions as the input matrix, containing the derivatives of ReLU.
+ */
+Eigen::MatrixXf ReLU_derivative(Eigen::MatrixXf Z){
+    Eigen::MatrixXf derivative(Z.rows(), Z.cols());
+
+    for (int i = 0; i < Z.rows(); ++i) {
+        for (int j = 0; j < Z.cols(); ++j) {
+            if (Z(i, j) > 0) {
+                derivative(i, j) = 1;
+            } else {
+                derivative(i, j) = 0;
+            }
+        }
+    }
+
+    return derivative;
+}
