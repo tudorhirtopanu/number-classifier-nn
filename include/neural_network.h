@@ -1,5 +1,5 @@
-#ifndef FORWARD_PROPAGATION
-#define FORWARD_PROPAGATION
+#ifndef NEURAL_NETWORK
+#define NEURAL_NETWORK
 
 #include <Eigen/Core>
 
