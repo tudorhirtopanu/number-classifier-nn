@@ -91,12 +91,12 @@ Eigen::MatrixXf readData(const std::string& filename) {
 }
 
 /**
- * @brief Read label data from an IDX file into an integer vector.
+ * @brief Read label data from an IDX file into an eigen matrix.
  *
- * This function reads label data from an IDX file and stores it in an integer vector.
+ * This function reads label data from an IDX file and stores it in an eigen matrix.
  *
  * @param filename The name of the IDX file to read.
- * @return An integer vector containing the label data.
+ * @return A matrix containing the label data.
  */
 Eigen::MatrixXi readLabels(const std::string& filename) {
     Eigen::MatrixXi labels;
