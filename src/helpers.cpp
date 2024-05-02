@@ -28,3 +28,28 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> i
 
     return std::make_tuple(W1, b1, W2, b2);
 }
+
+/**
+ * @brief One-hot encode labels.
+ *
+ * This function performs one-hot encoding on integer labels.
+ *
+ * @param Y The vector of integer labels to be one-hot encoded.
+ * @return The one-hot encoded matrix where each column represents a sample
+ *         and each row represents a class.
+ */
+Eigen::MatrixXi oneHotEncode(const Eigen::VectorXi& Y){
+    int numSamples = Y.size();
+    int numClasses = Y.maxCoeff() + 1;
+
+    // Initialize the one-hot encoded matrix
+    Eigen::MatrixXi oneHotY(numClasses, numSamples);
+    oneHotY.setZero(); // Initialize with zeros
+
+    // Set the one-hot encoded values
+    for (int i = 0; i < numSamples; ++i) {
+        oneHotY(Y(i), i) = 1;
+    }
+
+    return oneHotY.transpose();
+}

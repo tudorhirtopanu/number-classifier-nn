@@ -5,4 +5,6 @@
 
 std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> initParams();
 
+Eigen::MatrixXi oneHotEncode(const Eigen::VectorXi& Y);
+
 #endif
