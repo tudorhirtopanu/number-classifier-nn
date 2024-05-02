@@ -6,6 +6,6 @@
 
 Eigen::MatrixXf readData(const std::string& filename);
 
-std::vector<int> readLabels(const std::string& filename);
+Eigen::MatrixXi readLabels(const std::string& filename);
 
 #endif

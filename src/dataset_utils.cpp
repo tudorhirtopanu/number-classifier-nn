@@ -98,8 +98,8 @@ Eigen::MatrixXf readData(const std::string& filename) {
  * @param filename The name of the IDX file to read.
  * @return An integer vector containing the label data.
  */
-std::vector<int> readLabels(const std::string& filename) {
-    std::vector<int> labels;
+Eigen::MatrixXi readLabels(const std::string& filename) {
+    Eigen::MatrixXi labels;
     std::ifstream file(filename, std::ios::binary);
 
     if (!file) {
@@ -111,25 +111,24 @@ std::vector<int> readLabels(const std::string& filename) {
     int magic_number;
     file.read(reinterpret_cast<char*>(&magic_number), sizeof(magic_number));
     magic_number = __builtin_bswap32(magic_number); // Convert from big-endian to little-endian
-
     if (magic_number != 2049) {
         std::cerr << "Invalid magic number" << std::endl;
         return labels;
     }
-
     // Read the number of labels
     int num_labels;
     file.read(reinterpret_cast<char*>(&num_labels), sizeof(num_labels));
     num_labels = __builtin_bswap32(num_labels); // Convert from big-endian to little-endian
 
-    labels.reserve(num_labels);
+    labels.resize(num_labels, 1);
 
     // Read the labels
     for (int i = 0; i < num_labels; ++i) {
         uint8_t label_byte;
         file.read(reinterpret_cast<char*>(&label_byte), sizeof(label_byte));
-        labels[i] = static_cast<int>(label_byte);
+        labels(i, 0) = static_cast<int>(label_byte);
     }
+
 
     return labels;
 }
