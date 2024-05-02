@@ -98,8 +98,8 @@ Eigen::MatrixXf readData(const std::string& filename) {
  * @param filename The name of the IDX file to read.
  * @return A matrix containing the label data.
  */
-Eigen::MatrixXi readLabels(const std::string& filename) {
-    Eigen::MatrixXi labels;
+Eigen::VectorXi readLabels(const std::string& filename) {
+    Eigen::VectorXi labels;
     std::ifstream file(filename, std::ios::binary);
 
     if (!file) {
@@ -120,7 +120,7 @@ Eigen::MatrixXi readLabels(const std::string& filename) {
     file.read(reinterpret_cast<char*>(&num_labels), sizeof(num_labels));
     num_labels = __builtin_bswap32(num_labels); // Convert from big-endian to little-endian
 
-    labels.resize(num_labels, 1);
+    labels.resize(num_labels);
 
     // Read the labels
     for (int i = 0; i < num_labels; ++i) {
