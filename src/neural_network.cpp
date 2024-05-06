@@ -1,7 +1,9 @@
 #include "../include/neural_network.h"
 #include "../include/activation_functions.h"
+#include "../include/helpers.h"
 
 #include <Eigen/Core>
+#include <iostream>
 
 /**
  * @brief Forward propagation for neural network
@@ -22,7 +24,8 @@
  *         - The activation of the output layer.
  *         - The output of the output layer after activation
  */
-std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> forwardPropagation(Eigen::MatrixXf W1, Eigen::MatrixXf b1, Eigen::MatrixXf W2, Eigen::MatrixXf b2, Eigen::MatrixXf X){
+std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> forwardPropagation(Eigen::MatrixXf W1,Eigen::MatrixXf b1,Eigen::MatrixXf W2,
+                                                                                                  Eigen::MatrixXf b2,Eigen::MatrixXf X){
 
     // Calculate Z1
     Eigen::MatrixXf Z1 = W1*X;
@@ -44,3 +47,88 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> f
 
     return std::make_tuple(Z1, A1, Z2, A2);
 }
+
+/**
+ * @brief Backward propagation for neural network
+ *
+ * This function performs backward propagation for the neural network,
+ * computing the gradients of the cost function with respect to the
+ * parameters (weights and biases) of the network.
+ *
+ * @param Z1 Activation values of the first hidden layer.
+ * @param A1 Output values of the first hidden layer.
+ * @param Z2 Activation values of the output layer.
+ * @param A2 Output values of the output layer.
+ * @param W1 Weight matrix for the first layer.
+ * @param W2 Weight matrix for the second layer.
+ * @param X Input data matrix.
+ * @param Y Vector of true labels.
+ *
+ * @return A tuple containing the gradients of the cost function with respect to the parameters:
+ *         - Gradient of the cost function with respect to the weights of the first layer.
+ *         - Gradient of the cost function with respect to the biases of the first layer.
+ *         - Gradient of the cost function with respect to the weights of the second layer.
+ *         - Gradient of the cost function with respect to the biases of the second layer.
+ */
+std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> backwardPropagation(Eigen::MatrixXf Z1,Eigen::MatrixXf A1,Eigen::MatrixXf Z2,Eigen::MatrixXf A2,
+                                                                                                   Eigen::MatrixXf W1,Eigen::MatrixXf W2,Eigen::MatrixXf X,Eigen::VectorXi Y){
+
+    // Calculate the number of training examples
+    float m = Y.size();
+
+    // One hot encode labels
+    Eigen::MatrixXi oneHotY = oneHotEncode(Y);
+
+    Eigen::MatrixXf dZ2 = A2 - oneHotY.cast<float>();
+
+    Eigen::MatrixXf dW2 = (1 / m) *dZ2 *A1.transpose();
+
+    Eigen::VectorXf db2 = (1 / m) * dZ2.rowwise().sum();
+
+    Eigen::MatrixXf dZ1 =  W2.transpose() * dZ2; // Dot product
+    dZ1 = dZ1.array() * ReLU_derivative(Z1).array();    // Element-wise multiplication
+
+    Eigen::MatrixXf dW1 = (1/m) * Z1 * X.transpose();
+
+    Eigen::VectorXf db1 = (1 / m) * dZ1.rowwise().sum();
+
+    return std::make_tuple(dW1, db1, dW2, db2);
+}
+
+/**
+ * @brief Update parameters for the neural network.
+ *
+ * This function updates the parameters (weights and biases) for the neural network based on the calculated gradients and a specified learning rate (alpha).
+ * The parameters are updated using gradient descent, where each parameter is adjusted by subtracting the product of the gradient and the learning rate.
+ *
+ * @param W1 The weight matrix for the first layer
+ * @param b1 The bias vector for the first layer
+ * @param W2 The weight matrix for the second layer
+ * @param b2 The bias vector for the second layer
+ * @param dW1 The gradient of the loss with respect to W1
+ * @param db1 The gradient of the loss with respect to b1
+ * @param dW2 The gradient of the loss with respect to W2
+ * @param db2 The gradient of the loss with respect to b2
+ * @param alpha The learning rate for gradient descent
+ *
+ * @return A tuple containing the updated parameters:
+ *         - W1: The updated weight matrix for the first layer
+ *         - b1: The updated bias vector for the first layer
+ *         - W2: The updated weight matrix for the second layer
+ *         - b2: The updated bias vector for the second layer
+ */
+std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> updateParameters(Eigen::MatrixXf W1,Eigen::MatrixXf b1,Eigen::MatrixXf W2,
+                                                                                                Eigen::MatrixXf b2,Eigen::MatrixXf dW1,Eigen::MatrixXf db1,
+                                                                                                Eigen::MatrixXf dW2,Eigen::MatrixXf db2,float alpha){
+    W1 = W1 - alpha * dW1;
+    b1 = b1 - alpha * db1;
+    W2 = W2 - alpha * dW2;
+    b2 = b2 - alpha * db2;
+
+    return std::make_tuple(W1, b1, W2, b2);
+}
+
+std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> gradientDescent(){
+
+}
+
