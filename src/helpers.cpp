@@ -51,5 +51,5 @@ Eigen::MatrixXi oneHotEncode(const Eigen::VectorXi& Y){
         oneHotY(Y(i), i) = 1;
     }
 
-    return oneHotY.transpose();
+    return oneHotY;
 }
