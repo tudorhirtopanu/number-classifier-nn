@@ -88,7 +88,7 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> b
     Eigen::MatrixXf dZ1 =  W2.transpose() * dZ2; // Dot product
     dZ1 = dZ1.array() * ReLU_derivative(Z1).array();    // Element-wise multiplication
 
-    Eigen::MatrixXf dW1 = (1/m) * Z1 * X.transpose();
+    Eigen::MatrixXf dW1 = (1/m) * dZ1 * X.transpose();
 
     Eigen::VectorXf db1 = (1 / m) * dZ1.rowwise().sum();
 
@@ -120,15 +120,82 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> b
 std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> updateParameters(Eigen::MatrixXf W1,Eigen::MatrixXf b1,Eigen::MatrixXf W2,
                                                                                                 Eigen::MatrixXf b2,Eigen::MatrixXf dW1,Eigen::MatrixXf db1,
                                                                                                 Eigen::MatrixXf dW2,Eigen::MatrixXf db2,float alpha){
+    /*
+    std::cout << "Before update:" << std::endl;
+    std::cout << "W1:\n" << W1 << std::endl;
+    std::cout << "b1:\n" << b1 << std::endl;
+    std::cout << "W2:\n" << W2 << std::endl;
+    std::cout << "b2:\n" << b2 << std::endl;
+     */
+
     W1 = W1 - alpha * dW1;
     b1 = b1 - alpha * db1;
     W2 = W2 - alpha * dW2;
     b2 = b2 - alpha * db2;
 
+    /*
+    std::cout << "After update:" << std::endl;
+    std::cout << "W1:\n" << W1 << std::endl;
+    std::cout << "b1:\n" << b1 << std::endl;
+    std::cout << "W2:\n" << W2 << std::endl;
+    std::cout << "b2:\n" << b2 << std::endl;
+     */
+
     return std::make_tuple(W1, b1, W2, b2);
 }
 
-std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> gradientDescent(){
+/**
+ * @brief Perform gradient descent optimization for the neural network.
+ *
+ * This function optimizes the neural network parameters using gradient descent.
+ * It updates the parameters (weights and biases) iteratively based on the gradients
+ * of the cost function with respect to the parameters.
+ *
+ * @param X The input data matrix.
+ * @param Y The vector of true class labels.
+ * @param alpha The learning rate for gradient descent.
+ * @param iterations The number of iterations for gradient descent.
+ *
+ * @return A tuple containing the optimized parameters:
+ *         - W1: The optimized weight matrix for the first layer.
+ *         - b1: The optimized bias vector for the first layer.
+ *         - W2: The optimized weight matrix for the second layer.
+ *         - b2: The optimized bias vector for the second layer.
+ */
+std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> gradientDescent(Eigen::MatrixXf X,Eigen::VectorXi Y, float alpha, int iterations){
 
+    // initialise parameters
+    Eigen::MatrixXf W1;
+    Eigen::MatrixXf b1;
+    Eigen::MatrixXf W2;
+    Eigen::MatrixXf b2;
+
+    std::tie(W1, b1, W2, b2) = initParams();
+
+    for(int i = 0; i<iterations; i++){
+
+        Eigen::MatrixXf Z1; // pre activation value of neurons in first hidden layer
+        Eigen::MatrixXf A1; // activated/output value of neurons in first hidden layer
+        Eigen::MatrixXf Z2; // pre activation value of neurons in second hidden layer
+        Eigen::MatrixXf A2; // activated/output value of neurons in second hidden layer
+
+        std::tie(Z1, A1, Z2, A2) = forwardPropagation(W1, b1, W2, b2, X);
+
+        Eigen::MatrixXf dW1; // gradient of the cost function with respect to the weights of the first layer.
+        Eigen::MatrixXf db1; // gradient of the cost function with respect to the biases of the first layer.
+        Eigen::MatrixXf dW2; // gradient of the cost function with respect to the weights of the second layer.
+        Eigen::MatrixXf db2; // gradient of the cost function with respect to the biases of the second layer.
+
+        std::tie(dW1, db1, dW2, db2) = backwardPropagation(Z1, A1, Z2, A2, W1, W2, X, Y);
+
+        std::tie(W1, b1, W2, b2) = updateParameters(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha);
+
+        //if(i % 10 == 0) {
+            Eigen::VectorXi predictions = getPredictions(A2);
+            double accuracy = getAccuracy(predictions, Y);
+            std::cout << "Iteration: " << i << ", Accuracy: " << accuracy << std::endl;
+        //}
+
+    }
 }
 
