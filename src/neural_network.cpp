@@ -4,6 +4,9 @@
 
 #include <Eigen/Core>
 #include <iostream>
+#include <chrono>
+
+
 
 /**
  * @brief Forward propagation for neural network
@@ -174,6 +177,8 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> g
 
     for(int i = 0; i<iterations; i++){
 
+        auto start_time = std::chrono::high_resolution_clock::now();
+
         Eigen::MatrixXf Z1; // pre activation value of neurons in first hidden layer
         Eigen::MatrixXf A1; // activated/output value of neurons in first hidden layer
         Eigen::MatrixXf Z2; // pre activation value of neurons in second hidden layer
@@ -190,12 +195,38 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> g
 
         std::tie(W1, b1, W2, b2) = updateParameters(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha);
 
-        //if(i % 10 == 0) {
-            Eigen::VectorXi predictions = getPredictions(A2);
-            double accuracy = getAccuracy(predictions, Y);
-            std::cout << "Iteration: " << i << ", Accuracy: " << accuracy << std::endl;
-        //}
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+
+        Eigen::VectorXi predictions = getPredictions(A2);
+        double accuracy = getAccuracy(predictions, Y);
+        std::cout << "Iteration: " << i << ", Accuracy: " << accuracy << std::endl;
+        std::cout << "Elapsed time: " << duration.count() << " milliseconds" << std::endl;
+
 
     }
+
+    return std::tie(W1, b1, W2, b2);
+}
+
+/**
+ * @brief Run an image through the neural network and obtain the output.
+ *
+ * This function takes an image as input and passes it through the neural network
+ * to obtain the output of the network.
+ *
+ * @param image The input image matrix.
+ * @param W1 The weight matrix for the first layer.
+ * @param b1 The bias vector for the first layer.
+ * @param W2 The weight matrix for the second layer.
+ * @param b2 The bias vector for the second layer.
+ *
+ * @return The output of the neural network after processing the input image.
+ */
+
+Eigen::MatrixXf runImageThroughNetwork(const Eigen::MatrixXf& image, const Eigen::MatrixXf& W1, const Eigen::MatrixXf& b1, const Eigen::MatrixXf& W2, const Eigen::MatrixXf& b2) {
+
+    // Call the forwardPropagation function with the image data and network parameters
+    return std::get<3>(forwardPropagation(W1, b1, W2, b2, image));
 }
 
