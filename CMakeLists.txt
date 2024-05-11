@@ -8,6 +8,9 @@ include_directories(
         ${EIGEN_ROOT_DIR}
 )
 
+# Set compiler optimization flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+
 add_executable(NumberClassifierNN src/main.cpp
         src/dataset_utils.cpp
         src/helpers.cpp
