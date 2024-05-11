@@ -1,10 +1,10 @@
+
 #include "../include/neural_network.h"
 #include "../include/activation_functions.h"
 #include "../include/helpers.h"
 
 #include <Eigen/Core>
 #include <iostream>
-#include <chrono>
 
 
 
@@ -27,8 +27,14 @@
  *         - The activation of the output layer.
  *         - The output of the output layer after activation
  */
-std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> forwardPropagation(Eigen::MatrixXf W1,Eigen::MatrixXf b1,Eigen::MatrixXf W2,
-                                                                                                  Eigen::MatrixXf b2,Eigen::MatrixXf X){
+#include <chrono>
+
+std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> forwardPropagation(const Eigen::MatrixXf& W1,
+                                                                                                  const Eigen::MatrixXf& b1,
+                                                                                                  const Eigen::MatrixXf& W2,
+                                                                                                  const Eigen::MatrixXf& b2,
+                                                                                                  const Eigen::MatrixXf& X){
+
 
     // Calculate Z1
     Eigen::MatrixXf Z1 = W1*X;
@@ -123,26 +129,11 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> b
 std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> updateParameters(Eigen::MatrixXf W1,Eigen::MatrixXf b1,Eigen::MatrixXf W2,
                                                                                                 Eigen::MatrixXf b2,Eigen::MatrixXf dW1,Eigen::MatrixXf db1,
                                                                                                 Eigen::MatrixXf dW2,Eigen::MatrixXf db2,float alpha){
-    /*
-    std::cout << "Before update:" << std::endl;
-    std::cout << "W1:\n" << W1 << std::endl;
-    std::cout << "b1:\n" << b1 << std::endl;
-    std::cout << "W2:\n" << W2 << std::endl;
-    std::cout << "b2:\n" << b2 << std::endl;
-     */
 
     W1 = W1 - alpha * dW1;
     b1 = b1 - alpha * db1;
     W2 = W2 - alpha * dW2;
     b2 = b2 - alpha * db2;
-
-    /*
-    std::cout << "After update:" << std::endl;
-    std::cout << "W1:\n" << W1 << std::endl;
-    std::cout << "b1:\n" << b1 << std::endl;
-    std::cout << "W2:\n" << W2 << std::endl;
-    std::cout << "b2:\n" << b2 << std::endl;
-     */
 
     return std::make_tuple(W1, b1, W2, b2);
 }
