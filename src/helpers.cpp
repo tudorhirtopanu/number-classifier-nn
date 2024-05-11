@@ -27,14 +27,6 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> i
     Eigen::MatrixXf W2 = Eigen::MatrixXf::NullaryExpr(10, 10, [&](){return dis(gen);});
     Eigen::VectorXf b2 = Eigen::MatrixXf::NullaryExpr(10, 1, [&](){return dis(gen);});
 
-
-    std::cout << "Initialized parameters:" << std::endl;
-    std::cout << "W1:\n" << W1 << std::endl;
-    std::cout << "b1:\n" << b1 << std::endl;
-    std::cout << "W2:\n" << W2 << std::endl;
-    std::cout << "b2:\n" << b2 << std::endl;
-
-
     return std::make_tuple(W1, b1, W2, b2);
 }
 
@@ -115,4 +107,26 @@ double getAccuracy(const Eigen::VectorXi& predictions, const Eigen::VectorXi& Y)
     }
 
     return static_cast<double>(numCorrect) / numSamples;
+}
+
+/**
+ * @brief Find the index of the maximum value in a matrix.
+ *
+ * This function finds the index of the maximum value in the provided Eigen matrix.
+ * It iterates through the matrix and returns the index of the first occurrence of the maximum value.
+ * If multiple elements have the maximum value, it returns the index of the first occurrence.
+ *
+ * @param matrix The Eigen matrix to search for the maximum value.
+ * @return The index of the maximum value in the matrix.
+ */
+int findMaxIndex(const Eigen::MatrixXf& matrix) {
+    float maxVal = matrix.maxCoeff();
+    int maxIndex = -1;
+    for (int i = 0; i < matrix.rows(); ++i) {
+        if (matrix(i, 0) == maxVal) {
+            maxIndex = i;
+            break;
+        }
+    }
+    return maxIndex;
 }
