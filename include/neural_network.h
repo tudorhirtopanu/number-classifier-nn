@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 
-std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> forwardPropagation( Eigen::MatrixXf W1,Eigen::MatrixXf b1,Eigen::MatrixXf W2,Eigen::MatrixXf b2,Eigen::MatrixXf X);
+std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> forwardPropagation( const Eigen::MatrixXf& W1, const Eigen::MatrixXf& b1,const Eigen::MatrixXf& W2,const Eigen::MatrixXf& b2,const Eigen::MatrixXf& X);
 
 std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> backwardPropagation(Eigen::MatrixXf Z1, Eigen::MatrixXf A1, Eigen::MatrixXf Z2, Eigen::MatrixXf A2,Eigen::MatrixXf W1, Eigen::MatrixXf W2, Eigen::MatrixXf X, Eigen::VectorXi Y);
 
