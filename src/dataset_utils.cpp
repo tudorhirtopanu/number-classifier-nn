@@ -132,3 +132,43 @@ Eigen::VectorXi readLabels(const std::string& filename) {
 
     return labels;
 }
+
+/**
+ * @brief Save an Eigen matrix as a PGM image.
+ *
+ * This function saves the provided Eigen matrix as a PGM (Portable Gray Map) image.
+ * It writes the matrix values as pixel intensities to a binary file in PGM format.
+ * The matrix values are scaled by 255 to fit within the valid intensity range [0, 255].
+ *
+ *
+ *
+ * @param filename The name of the file to save the PGM image to.
+ * @param image The Eigen matrix representing the image to be saved.
+ *              Each element of the matrix represents the intensity of a pixel.
+ *              The matrix dimensions must match the desired dimensions of the image.
+ */
+void savePGM(const std::string& filename, const Eigen::MatrixXf& image) {
+    std::ofstream file(filename, std::ios::out | std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Error opening file for writing: " << filename << std::endl;
+        return;
+    }
+
+    // Write PGM header
+    file << "P2" << std::endl; // PGM magic number
+    file << "28 28" << std::endl; // Width and Height
+    file << "255" << std::endl; // Maximum intensity value
+
+    std::cout << image.rows() << std::endl;
+    std::cout << image.cols() << std::endl;
+
+    // Write pixel values (scaled by 255)
+    for (int i = 0; i < image.rows(); ++i) {
+        for (int j = 0; j < image.cols(); ++j) {
+            file << image(i, j) * 255 << " ";
+        }
+        file << std::endl;
+    }
+
+    file.close();
+}
