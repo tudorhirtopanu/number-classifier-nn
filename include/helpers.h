@@ -11,4 +11,6 @@ Eigen::VectorXi getPredictions(const Eigen::MatrixXf& A2);
 
 double getAccuracy(const Eigen::VectorXi& predictions, const Eigen::VectorXi& Y);
 
+int findMaxIndex(const Eigen::MatrixXf& matrix);
+
 #endif
