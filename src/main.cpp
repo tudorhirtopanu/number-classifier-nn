@@ -1,82 +1,76 @@
 #include <iostream>
 #include <fstream>
-#include <random>
-#include <Eigen/Dense>
 
 #include "../include/dataset_utils.h"
 #include "../include/helpers.h"
-
-
-/* TODO:
- * - randomise order of images&labels
- */
-
-// Temp func to print out image
-void savePGM(const std::string& filename, const Eigen::MatrixXf& image) {
-    std::ofstream file(filename, std::ios::out | std::ios::binary);
-    if (!file.is_open()) {
-        std::cerr << "Error opening file for writing: " << filename << std::endl;
-        return;
-    }
-
-    // Write PGM header
-    file << "P2" << std::endl; // PGM magic number
-    file << "28 28" << std::endl; // Width and Height
-    file << "255" << std::endl; // Maximum intensity value
-
-    std::cout << image.rows() << std::endl;
-    std::cout << image.cols() << std::endl;
-    // Write pixel values (scaled by 255)
-    for (int i = 0; i < image.rows(); ++i) {
-        for (int j = 0; j < image.cols(); ++j) {
-            file << image(i, j) * 255 << " ";
-        }
-        file << std::endl;
-    }
-
-    file.close();
-}
+#include "../include/neural_network.h"
+#include "../include/parameter_handler.h"
 
 int main() {
 
+    /**
+     * Setup
+     */
+
+    // files for training images & labels
     std::string imageDataFile = "../data/train-images-idx3-ubyte";
     std::string labelDataFile = "../data/train-labels.idx1-ubyte";
-    const int DATA_INDEX = 1960;
 
-    // Load Data
-    Eigen::MatrixXf mnistData = readData(imageDataFile);
+    // files for testing images & labels
+    std::string testImageDataFile = "../data/t10k-images-idx3-ubyte";
+    std::string testLabelDataFile = "../data/t10k-labels.idx1-ubyte";
 
-    std::cout << mnistData.rows() << std::endl;
-    std::cout << mnistData.cols() << std::endl;
+    // Load training images & labels
+    Eigen::MatrixXf trainingData = readData(imageDataFile);
+    Eigen::VectorXi labels = readLabels(labelDataFile);
 
-    // Load label data
-    std::vector<int> labels = readLabels(labelDataFile);
-    int label = labels[DATA_INDEX];
+    // Load test images & labels
+    Eigen::MatrixXf testingData = readData(testImageDataFile);
+    Eigen::VectorXi testingLabels = readLabels(testLabelDataFile);
 
-    // mnistData is a matrix of pixel values
-    Eigen::MatrixXf image = mnistData.col(DATA_INDEX);
+    /**
+     * Training Model
+     *
+     * -train the neural network and save parameters in the 'models' folder
+     */
 
-    // Save the first item in the array as a PGM image
-    std::string outputFilename = "first_image.pgm";
-    savePGM(outputFilename, image);
 
-    std::cout << "Label for image at index 10: " << label << std::endl;
+    Eigen::MatrixXf W1, b1, W2, b2;
 
-    // Initialize parameters
-    Eigen::MatrixXf W1;
-    Eigen::MatrixXf b1;
-    Eigen::MatrixXf W2;
-    Eigen::MatrixXf b2;
+    std::tie(W1, b1, W2, b2) = gradientDescent(trainingData, labels,testingData,testingLabels, 0.10, 250);
 
-    std::tie(W1, b1, W2, b2) = initParams();
+    saveParameters(W1, b1, W2, b2, "../models/params4.bin");
 
-    // Get the shape of W1
-    int rows = W1.rows();
-    int cols = W1.cols();
 
-    // Print the shape of W1
-    std::cout << "Shape of W1: " << rows << "x" << cols << std::endl;
 
+    /**
+     * Testing Model
+     *
+     * -test the model by inputting an image from the testing data set
+     */
+
+/*
+    const int TEST_DATA_INDEX = 103;
+    Eigen::VectorXf testImage = testingData.col(TEST_DATA_INDEX);
+
+    int testLabel = testingLabels(TEST_DATA_INDEX, 0);
+
+    std::cout << "Label for image " << testLabel << std::endl;
+
+    // Save the item as a PGM image (to provide visual of data item)
+    savePGM("image.pgm", testImage);
+
+    Eigen::MatrixXf W1, b1, W2, b2;
+    std::tie(W1, b1, W2, b2) = loadParameters("../models/params3.bin");
+
+    Eigen::MatrixXf result = runImageThroughNetwork(testImage,W1, b1, W2, b2);
+
+    int maxIndex = findMaxIndex(result);
+
+    std::cout << "Result:\n " << result << std::endl;
+    std::cout << "\nPredicted Number: " << maxIndex << std::endl;
+
+*/
     return 0;
 }
 
