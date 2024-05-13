@@ -4,6 +4,7 @@
 #include <cmath>
 #include <fstream>
 #include <Eigen/Dense>
+#include <random>
 
 /**
  * @brief Convert endianness of a 32-bit integer.
@@ -159,9 +160,6 @@ void savePGM(const std::string& filename, const Eigen::MatrixXf& image) {
     file << "28 28" << std::endl; // Width and Height
     file << "255" << std::endl; // Maximum intensity value
 
-    std::cout << image.rows() << std::endl;
-    std::cout << image.cols() << std::endl;
-
     // Write pixel values (scaled by 255)
     for (int i = 0; i < image.rows(); ++i) {
         for (int j = 0; j < image.cols(); ++j) {
@@ -171,4 +169,25 @@ void savePGM(const std::string& filename, const Eigen::MatrixXf& image) {
     }
 
     file.close();
+}
+
+void shuffleDataAndLabels(Eigen::MatrixXf& data, Eigen::VectorXi& labels) {
+    // Create an index array
+    std::vector<int> indices(data.cols());
+    std::iota(indices.begin(), indices.end(), 0);
+
+    // Shuffle the indices
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(indices.begin(), indices.end(), g);
+
+    // Create temporary copies of data and labels
+    Eigen::MatrixXf tempData = data;
+    Eigen::VectorXi tempLabels = labels;
+
+    // Shuffle data columns and labels using the shuffled indices
+    for (int i = 0; i < data.cols(); ++i) {
+        data.col(i) = tempData.col(indices[i]);
+        labels(i) = tempLabels(indices[i]);
+    }
 }
