@@ -2,6 +2,7 @@
 #include "../include/neural_network.h"
 #include "../include/activation_functions.h"
 #include "../include/helpers.h"
+#include "../include/dataset_utils.h"
 
 #include <Eigen/Core>
 #include <iostream>
@@ -156,7 +157,7 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> u
  *         - W2: The optimized weight matrix for the second layer.
  *         - b2: The optimized bias vector for the second layer.
  */
-std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> gradientDescent(Eigen::MatrixXf X,Eigen::VectorXi Y, float alpha, int iterations){
+std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> gradientDescent(Eigen::MatrixXf X,Eigen::VectorXi Y,Eigen::MatrixXf valX,Eigen::VectorXi valY, float alpha, int iterations){
 
     // initialise parameters
     Eigen::MatrixXf W1;
@@ -168,7 +169,8 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> g
 
     for(int i = 0; i<iterations; i++){
 
-        auto start_time = std::chrono::high_resolution_clock::now();
+        shuffleDataAndLabels(X, Y);
+        shuffleDataAndLabels(valX, valY);
 
         Eigen::MatrixXf Z1; // pre activation value of neurons in first hidden layer
         Eigen::MatrixXf A1; // activated/output value of neurons in first hidden layer
@@ -186,13 +188,20 @@ std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf> g
 
         std::tie(W1, b1, W2, b2) = updateParameters(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha);
 
-        auto end_time = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+        if((i+1)%10 == 0 || i == 0){
+            // Calculate accuracy on validation set
+            Eigen::MatrixXf valZ1; // pre activation value of neurons in first hidden layer
+            Eigen::MatrixXf valA1; // activated/output value of neurons in first hidden layer
+            Eigen::MatrixXf valZ2; // pre activation value of neurons in second hidden layer
+            Eigen::MatrixXf valA2;
+            std::tie(valZ1, valA1, valZ2, valA2) = forwardPropagation(W1, b1, W2, b2, valX);
+            Eigen::VectorXi valPredictions = getPredictions(valA2);
+            double valAccuracy = getAccuracy(valPredictions, valY);
 
-        Eigen::VectorXi predictions = getPredictions(A2);
-        double accuracy = getAccuracy(predictions, Y);
-        std::cout << "Iteration: " << i << ", Accuracy: " << accuracy << std::endl;
-        std::cout << "Elapsed time: " << duration.count() << " milliseconds" << std::endl;
+            Eigen::VectorXi predictions = getPredictions(A2);
+            double accuracy = getAccuracy(predictions, Y);
+            std::cout << "Iteration: " << i+1 << ", Accuracy: " << accuracy << ", Validation Accuracy: " << valAccuracy << std::endl;
+        }
 
 
     }
