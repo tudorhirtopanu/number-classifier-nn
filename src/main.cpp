@@ -17,6 +17,12 @@ int main() {
      * Setup
      */
 
+    // Choose the model to load
+    const std::string SAVED_MODEL = "../models/model.bin";
+
+    // Set name for new models to save
+    const std::string NEW_MODEL_NAME = "model";
+
     // files for training images & labels
     std::string imageDataFile = "../data/train-images-idx3-ubyte";
     std::string labelDataFile = "../data/train-labels.idx1-ubyte";
@@ -44,7 +50,7 @@ int main() {
     if (mode == Mode::TRAIN) {
         Eigen::MatrixXf W1, b1, W2, b2;
         std::tie(W1, b1, W2, b2) = gradientDescent(trainingData, labels, testingData, testingLabels, 0.15, 650);
-        saveParameters(W1, b1, W2, b2, "../models/model.bin");
+        saveParameters(W1, b1, W2, b2, "../models/"+NEW_MODEL_NAME);
     }
 
     /**
@@ -64,7 +70,7 @@ int main() {
         savePGM("image.pgm", testImage);
 
         Eigen::MatrixXf W1, b1, W2, b2;
-        std::tie(W1, b1, W2, b2) = loadParameters("../models/model.bin");
+        std::tie(W1, b1, W2, b2) = loadParameters(SAVED_MODEL);
 
         Eigen::VectorXf result = runImageThroughNetwork(testImage, W1, b1, W2, b2);
 
