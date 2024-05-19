@@ -54,8 +54,8 @@ To set up and run the project in CLion:
 
     #### In main.cpp:
     - Set the Mode to either TRAIN or TEST
-    - If testing a model, set the directory in SAVED_MODEL
-    - If training a new model, set NEW_MODEL_NAME
+    - If testing a model, set the directory in `SAVED_MODEL`
+    - If training a new model, set `NEW_MODEL_NAME`
       
     #### Click on the run icon to build and run the project.
 
