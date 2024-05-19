@@ -6,6 +6,11 @@
 #include "../include/neural_network.h"
 #include "../include/parameter_handler.h"
 
+enum Mode {
+    TRAIN,
+    TEST
+};
+
 int main() {
 
     /**
@@ -28,49 +33,53 @@ int main() {
     Eigen::MatrixXf testingData = readData(testImageDataFile);
     Eigen::VectorXi testingLabels = readLabels(testLabelDataFile);
 
+    // Set the mode (TRAIN or TEST)
+    Mode mode = Mode::TEST;
     /**
      * Training Model
      *
      * -train the neural network and save parameters in the 'models' folder
      */
 
-
-    Eigen::MatrixXf W1, b1, W2, b2;
-
-    std::tie(W1, b1, W2, b2) = gradientDescent(trainingData, labels,testingData,testingLabels, 0.10, 250);
-
-    saveParameters(W1, b1, W2, b2, "../models/params4.bin");
-
-
+    if (mode == Mode::TRAIN) {
+        Eigen::MatrixXf W1, b1, W2, b2;
+        std::tie(W1, b1, W2, b2) = gradientDescent(trainingData, labels, testingData, testingLabels, 0.15, 650);
+        saveParameters(W1, b1, W2, b2, "../models/model.bin");
+    }
 
     /**
      * Testing Model
      *
      * -test the model by inputting an image from the testing data set
      */
+    if (mode == Mode::TEST) {
+        const int TEST_DATA_INDEX = 113;
+        Eigen::VectorXf testImage = testingData.col(TEST_DATA_INDEX);
 
-/*
-    const int TEST_DATA_INDEX = 103;
-    Eigen::VectorXf testImage = testingData.col(TEST_DATA_INDEX);
+        int testLabel = testingLabels(TEST_DATA_INDEX, 0);
 
-    int testLabel = testingLabels(TEST_DATA_INDEX, 0);
+        std::cout << "Label for image " << testLabel << std::endl;
 
-    std::cout << "Label for image " << testLabel << std::endl;
+        // Save the item as a PGM image (to provide visual of data item)
+        savePGM("image.pgm", testImage);
 
-    // Save the item as a PGM image (to provide visual of data item)
-    savePGM("image.pgm", testImage);
+        Eigen::MatrixXf W1, b1, W2, b2;
+        std::tie(W1, b1, W2, b2) = loadParameters("../models/model.bin");
 
-    Eigen::MatrixXf W1, b1, W2, b2;
-    std::tie(W1, b1, W2, b2) = loadParameters("../models/params3.bin");
+        Eigen::VectorXf result = runImageThroughNetwork(testImage, W1, b1, W2, b2);
 
-    Eigen::MatrixXf result = runImageThroughNetwork(testImage,W1, b1, W2, b2);
+        // Print the confidence scores for each digit
+        std::cout << "Result:" << std::endl;
+        for (int i = 0; i < result.rows(); ++i) {
+            for (int j = 0; j < result.cols(); ++j) {
+                std::cout << "Confidence score for " << i << ": " << result(i, j) << std::endl;
+            }
+        }
 
-    int maxIndex = findMaxIndex(result);
+        int maxIndex = findMaxIndex(result);
+        std::cout << "\nPredicted Number: " << maxIndex << std::endl;
+    }
 
-    std::cout << "Result:\n " << result << std::endl;
-    std::cout << "\nPredicted Number: " << maxIndex << std::endl;
-
-*/
     return 0;
 }
 
