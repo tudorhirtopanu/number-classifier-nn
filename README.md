@@ -78,7 +78,7 @@ Before you start, ensure you have these extensions downloaded in VSCode
 - C/C++ Extension Pack (Microsoft)
 - CMake Tools (Microsoft)
 
-You will also need a Clang or GCC compiler.
+You will also need a compiler suitable for CMake.
 
 To set up and run the project in VSCode:
 
