@@ -62,7 +62,7 @@ To set up and run the project in CLion:
    set(EIGEN_ROOT_DIR "/Path/to/eigen-3.4.0/")
     ```
 
-4. **Configuring and Executing the Project**:
+4. **Choosing between Training and Testing**:
 
     #### In main.cpp:
     - Set the Mode to either TRAIN or TEST
@@ -78,6 +78,8 @@ Before you start, ensure you have these extensions downloaded in VSCode
 - C/C++ Extension Pack (Microsoft)
 - CMake Tools (Microsoft)
 
+You will also need a Clang or GCC compiler.
+
 To set up and run the project in VSCode:
 
 1. **Clone the repository / Download ZIP**:
@@ -85,7 +87,7 @@ To set up and run the project in VSCode:
     git clone https://github.com/tudorhirtopanu/number-classifier-nn.git
     ```
 
-2. **Open the project in CLion**:
+2. **Open the project in VSCode**:
     - Open VSCode.
     - Select "Open" from the Start screen or from the "File" menu.
     - Navigate to the cloned project directory and open it.
@@ -103,8 +105,6 @@ To set up and run the project in VSCode:
     ```
 
 4. **Configuring and Building the Project**
-   - Select a compiler
-   - Generate a build folder  ```cmd+shift+p``` or ```ctrl+shift+p``` and select CMake:Build
    - Enter the following into the terminal:
    ```sh
    CMake .
@@ -117,6 +117,13 @@ To set up and run the project in VSCode:
    ./NumberClassiferNN
     ```
    ***You may need to change the Data file paths in main.cpp to be relative to where you ran ```CMake .```***
+
+5. **Choosing between Training and Testing**:
+
+    #### In main.cpp:
+    - Set the Mode to either TRAIN or TEST
+    - If testing a model, set the directory in `SAVED_MODEL`
+    - If training a new model, set `NEW_MODEL_NAME`
 
 
 
