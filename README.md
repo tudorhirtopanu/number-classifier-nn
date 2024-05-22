@@ -3,12 +3,13 @@
 This repository contains a Neural Network written from scratch in C++ using the Eigen library. This project demonstrates a simple but effective approach to classifying MNIST handwritten digits.
 
 ## Table of Contents
-
 - [Introduction](#introduction)
 - [Features](#features)
 - [Dependencies](#dependencies)
-- [Installation (CLion)](#installation-clion)
-- [Installation (VSCode)](#installation-vscode)
+- [Installation](#installation)
+  - [CLion](#clion)
+  - [VSCode](#vscode)
+- [Usage](#usage)
 
 ## Introduction
 
@@ -16,115 +17,89 @@ This project demonstrates a neural network for digit classification. The neural 
 
 ## Features
 
-- **Forward and backward propagation**
-- **Gradient descent optimization**
-- **Training and testing on MNIST dataset**
-- **Accuracy Calculation**
+- Forward and backward propagation
+- Gradient descent optimization
+- Training and testing on MNIST dataset
+- Validation set usage to detect overtraining
+- Accuracy Calculation
 
 ## Dependencies
 
-- **Eigen library**
+- [Eigen library](https://eigen.tuxfamily.org/index.php?title=Main_Page)
+- CMake (for VSCode)
 
-**If you are using VSCode you will also need to download CMake**
+## Installation
 
-- On Linux / Mac devices you can do this via Homebrew
-    ```sh
-    brew install cmake
-    ```
-- Alternatively you can download CMake here:
-    ```sh
-    https://cmake.org/download/
-    ```
-
-## Installation (CLion)
+### CLion
 
 To set up and run the project in CLion:
 
-1. **Clone the repository / Download ZIP**:
-    ```sh
-    git clone https://github.com/tudorhirtopanu/number-classifier-nn.git
-    ```
+1. **Clone the repository:**
 
-2. **Open the project in CLion**:
-    - Open CLion.
-    - Select "Open" from the "Welcome to CLion" screen or from the "File" menu.
-    - Navigate to the cloned project directory and open it.
+   ```bash
+   git clone https://github.com/tudorhirtopanu/number-classifier-nn.git
 
-3. **Download the Eigen library**
-    - Go to the Eigen main page and download the latest stable release
-   ```sh
-   https://eigen.tuxfamily.org/index.php?title=Main_Page
-    ```
-   
-3. **Add Eigen to CMake.txt**:
-    - Modify this line in CMake.txt to contain the path to inside the downloaded folder (You may need to reload CMake project afterwards)
-   ```sh
-   set(EIGEN_ROOT_DIR "/Path/to/eigen-3.4.0/")
-    ```
+2. **Open the project in CLion:**
+- Open CLion.
+- Select "Open" from the "Welcome to CLion" screen or from the "File" menu.
+- Navigate to the cloned project directory and open it.
 
-4. **Choosing between Training and Testing**:
+3. **Download and add Eigen:**
+- Go to the Eigen main page and download the latest stable release.
+- Modify the CMakeLists.txt to include the path to the downloaded Eigen folder:
+  ```bash
+  set(EIGEN_ROOT_DIR "/Path/to/eigen-3.4.0/")
 
-    #### In main.cpp:
-    - Set the Mode to either TRAIN or TEST
-    - If testing a model, set the directory in `SAVED_MODEL`
-    - If training a new model, set `NEW_MODEL_NAME`
-      
-    #### Click on the run icon to build and run the project.
+4. **Choosing between training and testing:**
+- In main.cpp, set the Mode to either TRAIN or TEST.
+- If testing a model, set the directory in SAVED_MODEL.
+- If training a new model, set NEW_MODEL_NAME.
 
-## Installation (VSCode)
+5. **Click on the run icon to build and run the project:**
 
-Before you start, ensure you have these extensions downloaded in VSCode
-- C/C++ (Microsoft)
-- C/C++ Extension Pack (Microsoft)
-- CMake Tools (Microsoft)
-
-You will also need a compiler suitable for CMake.
+### VSCode
 
 To set up and run the project in VSCode:
 
-1. **Clone the repository / Download ZIP**:
-    ```sh
-    git clone https://github.com/tudorhirtopanu/number-classifier-nn.git
-    ```
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/tudorhirtopanu/number-classifier-nn.git
 
 2. **Open the project in VSCode**:
-    - Open VSCode.
-    - Select "Open" from the Start screen or from the "File" menu.
-    - Navigate to the cloned project directory and open it.
+- Open VSCode.
+- Select "Open" from the Start screen or from the "File" menu.
+- Navigate to the cloned project directory and open it.
 
-3. **Download the Eigen library**
-    - Go to the Eigen main page and download the latest stable release
-   ```sh
-   https://eigen.tuxfamily.org/index.php?title=Main_Page
-    ```
-   
-3. **Add Eigen to CMake.txt**:
-    - Modify this line in CMake.txt to contain the path to inside the downloaded folder.
-   ```sh
-   set(EIGEN_ROOT_DIR "/Path/to/eigen-3.4.0/")
-    ```
+3. **Download and add Eigen**:
+- Go to the Eigen main page and download the latest stable release.
+- Modify the `CMakeLists.txt` to include the path to the downloaded Eigen folder:
+  ```cmake
+  set(EIGEN_ROOT_DIR "/Path/to/eigen-3.4.0/")
 
 4. **Configuring and Building the Project**
-   - Enter the following into the terminal:
-   ```sh
+- Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P on macOS) and select CMake: Configure.
+- Open the Command Palette again and select CMake: Build.
+
+***For Unix-like systems:***
+```sh
    CMake .
-    ```
-   ```sh
    make
-    ```
-   - Run the project:
-   ```sh
-   ./NumberClassiferNN
-    ```
-   ***You may need to change the Data file paths in main.cpp to be relative to where you ran ```CMake .```***
+```
+***For Windows:***
+- Ensure you have a suitable compiler like MinGW or MSVC.
+- The build should be handled by VSCode CMake Tools.
 
-5. **Choosing between Training and Testing**:
+5. **Running the Project**
+- Run the executable generated, e.g. ```./NumberClassiferNN``` or ```./NumberClassiferNN.exe```
+- You may need to adjust data file paths in main.cpp to be relative to your CMake run directory
 
-    #### In main.cpp:
-    - Set the Mode to either TRAIN or TEST
-    - If testing a model, set the directory in `SAVED_MODEL`
-    - If training a new model, set `NEW_MODEL_NAME`
+## Usage
 
+1. **Set the Mode in `main.cpp`:**
+   - For training, set `Mode` to `TRAIN` and specify `NEW_MODEL_NAME`.
+   - For testing, set `Mode` to `TEST` and specify `SAVED_MODEL`.
 
+2. **Set the `EPOCHS` and `LEARN_RATE` in `main.cpp`:**
 
-
+3. **Run the project using your chosen IDE's build and run tools.**
