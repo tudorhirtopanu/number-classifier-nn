@@ -17,6 +17,9 @@ int main() {
      * Setup
      */
 
+    const int EPOCHS = 600;
+    const float LEARN_RATE = 0.15;
+
     // Choose the model to load
     const std::string SAVED_MODEL = "../models/model.bin";
 
@@ -49,7 +52,7 @@ int main() {
 
     if (mode == Mode::TRAIN) {
         Eigen::MatrixXf W1, b1, W2, b2;
-        std::tie(W1, b1, W2, b2) = gradientDescent(trainingData, labels, testingData, testingLabels, 0.15, 650);
+        std::tie(W1, b1, W2, b2) = gradientDescent(trainingData, labels, testingData, testingLabels, LEARN_RATE, EPOCHS);
         saveParameters(W1, b1, W2, b2, "../models/"+NEW_MODEL_NAME);
     }
 
