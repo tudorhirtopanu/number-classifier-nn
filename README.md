@@ -101,5 +101,6 @@ To set up and run the project in VSCode:
    - For testing, set `Mode` to `TEST` and specify `SAVED_MODEL`.
 
 2. **Set the `EPOCHS` and `LEARN_RATE` in `main.cpp`:**
+3. **If testing, set `TEST_DATA_INDEX` in `main.cpp`, to choose a specific image to run through the neural network:**
 
-3. **Run the project using your chosen IDE's build and run tools.**
+4. **Run the project using your chosen IDE's build and run tools.**
